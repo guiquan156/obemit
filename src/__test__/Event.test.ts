@@ -9,7 +9,7 @@ test('data in arguments can set in to instance', () => {
   expect(event.school).toBe('SCNU');
 });
 
-test('Event#on()', () => {
+test('add functions by method add~', () => {
   let event = new Event();
 
   event.on(function() {
@@ -28,3 +28,37 @@ test('Event#on()', () => {
   });
   expect(event.callback.say.hello.__cbs__.length).toBe(1);
 });
+
+test('function added will be exec after emit', () => {
+  let event = new Event()
+  let globalCount = 0
+  let sayCount = 0
+  let sayHelloCount = 0
+
+  event.on(function() {
+    ++globalCount
+  })
+  event.on(function() {
+    ++globalCount
+  })
+  event.emit()
+  expect(globalCount).toBe(2)
+
+  event.on('say', function() {
+    ++sayCount
+  })
+  event.on('say', function() {
+    ++sayCount
+  })
+  event.emit('say')
+  expect(sayCount).toBe(2)
+
+  event.on('say.hello', function() {
+    ++sayHelloCount
+  })
+  event.on('say.hello', function() {
+    ++sayHelloCount
+  })
+  event.emit('say.hello')
+  expect(sayHelloCount).toBe(2)
+})
