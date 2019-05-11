@@ -1,7 +1,7 @@
 {
-  "name": "eventjs",
+  "name": "obemit",
   "version": "1.0.0",
-  "description": "public/subscribe",
+  "description": "listen and emit some events. pulish/subscribe partten.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
