@@ -23,9 +23,20 @@ export default class Event {
 
   emit(name: string = '') {
     let curr: ICallback | false = this.getCallback(name);
+    let walk = (cbObj: ICallback) => {
+      // console.log(cbObj)
+      if (cbObj.__cbs__) {
+        cbObj.__cbs__.forEach(cb => cb())
+      }
+      for (let k in cbObj) {
+        if (cbObj.hasOwnProperty(k)) {
+          walk(cbObj[k])
+        }
+      }
+    };
 
-    if (!curr) return;
-    curr.__cbs__.forEach(cb => cb());
+    if (!curr) return
+    walk(curr)
   }
 
   on(name: string | (() => any), func: () => any = () => {}) {

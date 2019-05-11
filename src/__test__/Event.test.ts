@@ -61,6 +61,10 @@ test('function added will be exec after emit', () => {
   })
   event.emit('say.hello')
   expect(sayHelloCount).toBe(2)
+
+  event.emit('say')
+  expect(sayCount).toBe(4)
+  expect(sayHelloCount).toBe(4)
 })
 
 test('the callback will be cleared arfter method off exec', () => {
@@ -88,9 +92,9 @@ test('the callback will be cleared arfter method off exec', () => {
   event.emit('say.hello.world')
 
   expect(sayCount).toBe(1)
-  expect(sayHelloCount).toBe(1)
-  expect(sayWorldCount).toBe(1)
-  expect(sayHelloWorldCount).toBe(1)
+  expect(sayHelloCount).toBe(2)
+  expect(sayWorldCount).toBe(2)
+  expect(sayHelloWorldCount).toBe(3)
 
   event.off('say.hello')
   event.emit('say')
@@ -99,7 +103,9 @@ test('the callback will be cleared arfter method off exec', () => {
   event.emit('say.hello.world')
 
   expect(sayCount).toBe(2)
-  expect(sayHelloCount).toBe(1)
-  expect(sayWorldCount).toBe(2)
-  expect(sayHelloWorldCount).toBe(1)
+  expect(sayHelloCount).toBe(2)
+  expect(sayWorldCount).toBe(4)
+  expect(sayHelloWorldCount).toBe(3)
+
+  console.log(sayCount, sayHelloCount, sayWorldCount, sayHelloWorldCount)
 })
