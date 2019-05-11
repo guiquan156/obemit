@@ -9,49 +9,50 @@ interface ICallback {
 
 export default class Event {
   [data: string]: any;
-  callback: ICallback = {
+  public callback: ICallback = {
     __cbs__: [],
   };
 
   constructor(data: IData = {}) {
-    for (let key in data) {
+    for (const key in data) {
       if (data.hasOwnProperty(key)) {
         this[key] = data[key];
       }
     }
   }
 
-  emit(name: string = '') {
-    let curr: ICallback | false = this.getCallback(name);
-    let walk = (cbObj: ICallback) => {
+  public emit(name: string = '') {
+    const curr: ICallback | false = this.getCallback(name);
+    const walk = (cbObj: ICallback) => {
       // console.log(cbObj)
       if (cbObj.__cbs__) {
-        cbObj.__cbs__.forEach(cb => cb())
+        cbObj.__cbs__.forEach(cb => cb());
       }
-      for (let k in cbObj) {
+      for (const k in cbObj) {
         if (cbObj.hasOwnProperty(k)) {
-          walk(cbObj[k])
+          walk(cbObj[k]);
         }
       }
     };
 
-    if (!curr) return
-    walk(curr)
+    if (curr) {
+      walk(curr);
+    }
   }
 
-  on(name: string | (() => any), func: () => any = () => {}) {
-    if (typeof name == 'function') {
+  public on(name: string | (() => any), func: () => any = () => undefined) {
+    if (typeof name === 'function') {
       func = name;
       name = '';
     }
-    let curr: ICallback = <ICallback>this.getCallback(name, true);
+    const curr: ICallback = this.getCallback(name, true) as ICallback;
     curr.__cbs__.push(func);
   }
 
-  off(name: string = '') {
-    let nameList = name.split('.');
-    let currName = nameList.pop();
-    let prev = this.getCallback(nameList.join('.')) || this.callback;
+  public off(name: string = '') {
+    const nameList = name.split('.');
+    const currName = nameList.pop();
+    const prev = this.getCallback(nameList.join('.')) || this.callback;
 
     if (!currName) {
       this.callback = {
@@ -64,12 +65,11 @@ export default class Event {
     };
   }
 
-  getCallback(name: string = '', create: boolean = false): ICallback | false {
-    let nameList: Array<string> = name === '' ? [] : name.split('.');
+  public getCallback(name: string = '', create: boolean = false): ICallback | false {
+    const nameList: string[] = name === '' ? [] : name.split('.');
     let curr = this.callback;
 
-    for (let i = 0; i < nameList.length; i++) {
-      let currName = nameList[i];
+    for (const currName of nameList) {
       if (!curr[currName]) {
         if (create) {
           curr[currName] = {
