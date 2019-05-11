@@ -13,7 +13,7 @@ export default class Event {
     __cbs__: [],
   };
 
-  constructor(data: IData) {
+  constructor(data: IData = {}) {
     for (let key in data) {
       if (data.hasOwnProperty(key)) {
         this[key] = data[key];
@@ -28,9 +28,13 @@ export default class Event {
     curr.__cbs__.forEach(cb => cb());
   }
 
-  on(name: string = '', func: () => any) {
+  on(name: string | (() => any), func: () => any = () => {}) {
+    if (typeof name == 'function') {
+      func = name;
+      name = '';
+    }
     let curr: ICallback = <ICallback>this.getCallback(name, true);
-    curr.cbs.push(func);
+    curr.__cbs__.push(func);
   }
 
   off(name: string = '') {
@@ -49,24 +53,23 @@ export default class Event {
     };
   }
 
-  getCallback(name: string, create: boolean = false): ICallback | false {
-    let nameList: Array<string> = name.split('.');
+  getCallback(name: string = '', create: boolean = false): ICallback | false {
+    let nameList: Array<string> = name === '' ? [] : name.split('.');
     let curr = this.callback;
 
     for (let i = 0; i < nameList.length; i++) {
-      let _curr = curr[nameList[i]];
-      if (!_curr) {
+      let currName = nameList[i];
+      if (!curr[currName]) {
         if (create) {
-          _curr = {
+          curr[currName] = {
             __cbs__: [],
           };
         } else {
           return false;
         }
       }
-      curr = _curr;
+      curr = curr[currName];
     }
-
     return curr;
   }
 }
