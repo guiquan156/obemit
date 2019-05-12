@@ -24,7 +24,6 @@ export default class Event {
   public emit(name: string = '') {
     const curr: ICallback | false = this.getCallback(name);
     const walk = (cbObj: ICallback) => {
-      // console.log(cbObj)
       if (cbObj.__cbs__) {
         cbObj.__cbs__.forEach(cb => cb());
       }
@@ -37,6 +36,13 @@ export default class Event {
 
     if (curr) {
       walk(curr);
+    }
+  }
+
+  public emitSelf(name: string = '') {
+    const curr: ICallback | false = this.getCallback(name);
+    if (curr && curr.__cbs__) {
+      curr.__cbs__.forEach(cb => cb());
     }
   }
 
