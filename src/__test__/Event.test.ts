@@ -33,40 +33,28 @@ test('add functions by method add~', () => {
 
 test('function added will be exec after emit', () => {
   const event = new Event();
-  let globalCount = 0;
-  let sayCount = 0;
-  let sayHelloCount = 0;
+  const globalMock = jest.fn(() => {});
+  const sayMock = jest.fn(() => {});
+  const sayHelloMock = jest.fn(() => {});
 
-  event.on(() => {
-    ++globalCount;
-  });
-  event.on(() => {
-    ++globalCount;
-  });
+  event.on(globalMock);
+  event.on(globalMock);
   event.emit();
-  expect(globalCount).toBe(2);
+  expect(globalMock.mock.calls.length).toBe(2);
 
-  event.on('say', () => {
-    ++sayCount;
-  });
-  event.on('say', () => {
-    ++sayCount;
-  });
+  event.on('say', sayMock);
+  event.on('say', sayMock);
   event.emit('say');
-  expect(sayCount).toBe(2);
+  expect(sayMock.mock.calls.length).toBe(2);
 
-  event.on('say.hello', () => {
-    ++sayHelloCount;
-  });
-  event.on('say.hello', () => {
-    ++sayHelloCount;
-  });
+  event.on('say.hello', sayHelloMock);
+  event.on('say.hello', sayHelloMock);
   event.emit('say.hello');
-  expect(sayHelloCount).toBe(2);
+  expect(sayHelloMock.mock.calls.length).toBe(2);
 
   event.emit('say');
-  expect(sayCount).toBe(4);
-  expect(sayHelloCount).toBe(4);
+  expect(sayMock.mock.calls.length).toBe(4);
+  expect(sayHelloMock.mock.calls.length).toBe(4);
 });
 
 test('the callback will be cleared arfter method off exec', () => {

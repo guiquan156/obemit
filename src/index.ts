@@ -28,7 +28,7 @@ export default class Event {
         cbObj.__cbs__.forEach(cb => cb());
       }
       for (const k in cbObj) {
-        if (cbObj.hasOwnProperty(k)) {
+        if (cbObj.hasOwnProperty(k) && k !== '__cbs__') {
           walk(cbObj[k]);
         }
       }
