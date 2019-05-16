@@ -33,9 +33,9 @@ test('add functions by method add~', () => {
 
 test('function added will be exec after emit', () => {
   const event = new Event();
-  const globalMock = jest.fn(() => {});
-  const sayMock = jest.fn(() => {});
-  const sayHelloMock = jest.fn(() => {});
+  const globalMock = jest.fn();
+  const sayMock = jest.fn();
+  const sayHelloMock = jest.fn();
 
   event.on(globalMock);
   event.on(globalMock);
@@ -59,32 +59,25 @@ test('function added will be exec after emit', () => {
 
 test('the callback will be cleared arfter method off exec', () => {
   const event = new Event();
-  let sayCount = 0;
-  let sayHelloCount = 0;
-  let sayWorldCount = 0;
-  let sayHelloWorldCount = 0;
 
-  event.on('say', () => {
-    ++sayCount;
-  });
-  event.on('say.hello', () => {
-    ++sayHelloCount;
-  });
-  event.on('say.world', () => {
-    ++sayWorldCount;
-  });
-  event.on('say.hello.world', () => {
-    ++sayHelloWorldCount;
-  });
+  let sayMock = jest.fn();
+  let sayHelloMock = jest.fn();
+  let sayWorldMock = jest.fn();
+  let sayHelloWorldMock = jest.fn();
+
+  event.on('say', sayMock);
+  event.on('say.hello', sayHelloMock);
+  event.on('say.world', sayWorldMock);
+  event.on('say.hello.world', sayHelloWorldMock);
   event.emit('say');
   event.emit('say.hello');
   event.emit('say.world');
   event.emit('say.hello.world');
 
-  expect(sayCount).toBe(1);
-  expect(sayHelloCount).toBe(2);
-  expect(sayWorldCount).toBe(2);
-  expect(sayHelloWorldCount).toBe(3);
+  expect(sayMock.mock.calls.length).toBe(1);
+  expect(sayHelloMock.mock.calls.length).toBe(2);
+  expect(sayWorldMock.mock.calls.length).toBe(2);
+  expect(sayHelloWorldMock.mock.calls.length).toBe(3);
 
   event.off('say.hello');
   event.emit('say');
@@ -92,8 +85,12 @@ test('the callback will be cleared arfter method off exec', () => {
   event.emit('say.world');
   event.emit('say.hello.world');
 
-  expect(sayCount).toBe(2);
-  expect(sayHelloCount).toBe(2);
-  expect(sayWorldCount).toBe(4);
-  expect(sayHelloWorldCount).toBe(3);
+  expect(sayMock.mock.calls.length).toBe(2);
+  expect(sayHelloMock.mock.calls.length).toBe(2);
+  expect(sayWorldMock.mock.calls.length).toBe(4);
+  expect(sayHelloWorldMock.mock.calls.length).toBe(3);
+});
+
+test('emitSelf', () => {
+
 });
