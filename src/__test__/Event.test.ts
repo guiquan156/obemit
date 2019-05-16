@@ -92,5 +92,16 @@ test('the callback will be cleared arfter method off exec', () => {
 });
 
 test('emitSelf', () => {
+  const event = new Event();
+  const helloMock = jest.fn();
+  const helloWorldMock = jest.fn();
 
+  event.on('hello', helloMock);
+  event.on('hello', helloMock);
+  event.on('hello.world', helloWorldMock);
+  event.on('hello.world', helloWorldMock);
+  event.emitSelf('hello');
+
+  expect(helloMock.mock.calls.length).toBe(2);
+  expect(helloWorldMock.mock.calls.length).toBe(0);
 });
